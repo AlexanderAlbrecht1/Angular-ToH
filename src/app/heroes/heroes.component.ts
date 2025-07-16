@@ -4,27 +4,44 @@ import { UpperCasePipe, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HEROES } from '../mock-heroes';
 import { HeroDetailComponent } from '../hero-detail/hero-detail.component';
+import { HeroService } from '../services/hero.service';
+import { MessageService } from '../services/message.service';
 
 @Component({
   selector: 'app-heroes',
   standalone: true,
-  imports: [UpperCasePipe, FormsModule, NgFor, NgIf, HeroDetailComponent],
+  imports: [FormsModule, NgFor, HeroDetailComponent],
   templateUrl: './heroes.component.html',
   styleUrl: './heroes.component.scss',
 })
 export class HeroesComponent {
-
-  heroes = HEROES;
+  heroes: Hero[] = [];
 
   hero: Hero = {
     id: 1,
     name: 'Windstorm',
   };
 
-  selectedHero?:Hero | null;
+  selectedHero?: Hero | null;
 
-  onSelect(hero:Hero):void {
+  constructor(
+    private heroService: HeroService,
+    private messageService: MessageService
+  ) {}
+
+  ngOnInit() {
+    this.getHeroes();
+  }
+
+  onSelect(hero: Hero): void {
     this.selectedHero = hero;
-    setTimeout(() => {this.selectedHero = null}, 5000)
+    this.messageService.add(`HeroesComponent: Selected hero id=${hero.id}`);
+    // setTimeout(() => {
+    //   this.selectedHero = null;
+    // }, 5000);
+  }
+
+  getHeroes(): void {
+    this.heroService.getHeroes().subscribe((heroes) => (this.heroes = heroes));
   }
 }
