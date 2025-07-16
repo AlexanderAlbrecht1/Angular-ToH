@@ -21,8 +21,10 @@ export class HeroesComponent {
     name: 'Windstorm',
   };
 
-  selectedHero?:Hero;
+  selectedHero?:Hero | null;
+
   onSelect(hero:Hero):void {
     this.selectedHero = hero;
+    setTimeout(() => {this.selectedHero = null}, 5000)
   }
 }
